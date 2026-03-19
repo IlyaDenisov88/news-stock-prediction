@@ -219,22 +219,64 @@ def download_ticker_history(
 
 
 if __name__ == "__main__":
-    TICKERS = [
-        "SBER", "GAZP", "LKOH", "ROSN", "NVTK",
-        "GMKN", "TATN", "SNGS", "MGNT", "PLZL",
-    ]
+    TOP50_MOEX_TICKERS = [
+    # банки / финансы
+    "SBER", "VTBR", "T", "MOEX",
 
-    DATE_FROM = "2025-01-01"
-    DATE_TILL = "2025-03-18"
+    # нефть и газ
+    "GAZP", "LKOH", "ROSN", "NVTK", "SIBN", "TATN", "SNGS", "SNGSP",
+
+    # металлургия / сырье
+    "GMKN", "RUAL", "MAGN", "CHMF", "ALRS", "PLZL", "PHOR", "UGLD",
+
+    # ритейл / потреб сектор
+    "MGNT", "X5", "OZON", "BELU",
+
+    # IT / технологии
+    "YDEX", "VKCO", "POSI", "ASTR", "IVAT",
+
+    # транспорт / логистика
+    "FLOT", "AFLT",
+
+    # энергетика
+    "IRAO", "HYDR", "FEES",
+
+    # девелоперы
+    "PIKK", "LSRG", "ETLN",
+
+    # холдинги / прочее
+    "AFKS", "ENPG",
+
+    # доп ликвидные (расширение)
+    "RNFT", "EUTR", "BAZA", "TRNFP", "MTSS",
+    "RTKM", "RTKMP", "SMLT", "HEAD", "FIXP",
+    "CIAN", "SELG", "KZOSP"]
+
+
+    DATE_FROM = "2024-01-01"
+    DATE_TILL = "2026-03-18"
     TIMEFRAME = "1h"
 
-    for ticker in TICKERS:
+    all_dfs = []  
+
+    for ticker in TOP50_MOEX_TICKERS:
         try:
-            download_ticker_history(
+            df = download_ticker_history(
                 security=ticker,
                 date_from=DATE_FROM,
                 date_till=DATE_TILL,
                 timeframe=TIMEFRAME,
             )
+            all_dfs.append(df)
         except Exception as e:
             print(f"[ERROR] {ticker}: {e}")
+
+    # --- объединяем ---
+    if all_dfs:
+        full_df = pd.concat(all_dfs, ignore_index=True)
+
+        output_path = f"data/stocks/all_{TIMEFRAME}_{DATE_FROM}_{DATE_TILL}.csv"
+        save_dataframe(full_df, output_path)
+
+        print(f"\n[FINAL] общий датасет: {len(full_df)} строк")
+        print(f"[FINAL] сохранено в {output_path}")
