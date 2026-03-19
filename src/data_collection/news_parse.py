@@ -73,7 +73,7 @@ def build_output_name(
 class BaseNewsParser(ABC):
     source: str = "unknown"
 
-    def __init__(self, sleep_range=(0.5, 1.5), timeout=15):
+    def __init__(self, sleep_range=(0.2, 0.5), timeout=1):
         self.df = pd.DataFrame(columns=NEWS_COLUMNS)
         self.sleep_range = sleep_range
         self.timeout = timeout
@@ -210,7 +210,7 @@ class SmartLabParser(BaseNewsParser):
 class InvestFundsParser(BaseNewsParser):
     source = "investfunds.ru"
 
-    def __init__(self, sleep_range=(0.5, 1.5), timeout=15, max_pages=1000):
+    def __init__(self, sleep_range=(0.2, 0.5), timeout=1, max_pages=1000):
         super().__init__(sleep_range=sleep_range, timeout=timeout)
         self.max_pages = max_pages
 
@@ -490,9 +490,9 @@ def collect_news(date_from: str, date_till: str, investfunds_pages=10) -> pd.Dat
 
 
 if __name__ == "__main__":
-    DATE_FROM = "2025-03-01"
-    DATE_TILL = "2025-03-03"
-    INVESTFUNDS_PAGES = 10
+    DATE_FROM = "2024-01-01"
+    DATE_TILL = "2026-03-18"
+    INVESTFUNDS_PAGES = 1000
 
     df = collect_news(DATE_FROM, DATE_TILL, investfunds_pages=INVESTFUNDS_PAGES)
 
